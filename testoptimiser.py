@@ -16,7 +16,7 @@ import matplotlib.pyplot as plt
 
 def testoptimiser(optimiser,optimisername, functions, ftitles, a, b, max_iter, tol, showlog, plotleft, plotright):
     plt.rcParams['figure.constrained_layout.use'] = True
-    fig, ax = plt.subplots(nrows=3,ncols=len(functions))
+    fig, ax = plt.subplots(nrows=3, ncols=len(functions), figsize=(15, 10))
 
     for i in range(len(functions)):
         f = functions[i]                # The function to minmise
@@ -31,10 +31,13 @@ def testoptimiser(optimiser,optimisername, functions, ftitles, a, b, max_iter, t
         
         print(f'Running {optimisername} applied to {fname}...')
         result, xlist, flist, k, exit_flag = optimiser(f, [a, b], max_iter, tol, showlog)
-        print(f'{optimisername} applied to {fname} returned {result} after {k} iterations; flag={exit_flag}')
+        print(f'{optimisername} applied to {fname} returned {result} after {k} iterations & {len(flist)} function evaluations; flag={exit_flag}')
         
         ax[0,i].scatter(xlist, flist, zorder=11)
         ax[0,i].scatter(xlist[-1],flist[-1], zorder=12)       
+        ax[0,i].text(0.99, 0.99, f"{exit_flag}".split(".")[1] + f", {len(flist)} evals",
+            verticalalignment='top', horizontalalignment='right',
+            transform=ax[0,i].transAxes, fontsize=9)
         ax[0,i].grid(True)
 
         ax[1,i].scatter(range(len(flist)),flist, zorder=10)
@@ -48,6 +51,7 @@ def testoptimiser(optimiser,optimisername, functions, ftitles, a, b, max_iter, t
         ax[2,i].grid(True)
         
         # For older versions of MatplotLib:         fig.canvas.set_window_title('Brent\'s method') 
-        fig.canvas.manager.set_window_title(optimisername) 
+        fig.canvas.manager.set_window_title(optimisername)
 
+    plt.tight_layout()
     plt.show()
